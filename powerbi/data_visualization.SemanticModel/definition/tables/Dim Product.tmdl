@@ -1,0 +1,49 @@
+table 'Dim Product'
+	lineageTag: c072f893-a75e-4cc0-9991-57d6a0ec3bb9
+
+	column product_id
+		dataType: string
+		lineageTag: e7c84e02-1256-48b8-9ed0-793f89f5f54e
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_category
+		dataType: string
+		lineageTag: e01b440c-e787-4363-af55-4ef1449a85a0
+		summarizeBy: none
+		sourceColumn: product_category
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Category Display' =
+			
+			SUBSTITUTE(
+			    COALESCE(
+			        'Dim Product'[product_category],
+			        "Uncategorized"
+			    ),
+			    "_",
+			    " "
+			)
+		lineageTag: 53728ec0-d187-470d-82fe-e13670a69a0c
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dim Product' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "olist_analysis"),
+				    analytics_dim_product = Source{[Schema="analytics",Item="dim_product"]}[Data]
+				in
+				    analytics_dim_product
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

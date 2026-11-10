@@ -1,0 +1,37 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-ID
+	valueFilterBehavior: independent
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBI_QueryOrder = ["Fact Orders","Fact Order Payments","Fact Order Items","Dim Seller","Dim Product","Dim Date","Dim Customer","Measures (1)"]
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Fact Orders'
+ref table DateTableTemplate_06445ac8-1ddf-4a7d-8955-bcb281290e66
+ref table LocalDateTable_ca1310c8-3828-4d4b-8df8-904ed8a6e61b
+ref table LocalDateTable_26188ec2-c5d0-42f0-9035-c3d3892b34ff
+ref table LocalDateTable_f4fc169d-5325-4b78-8327-011fce2a7da2
+ref table LocalDateTable_cf73a71e-cd51-45f0-8028-64248d9699d2
+ref table LocalDateTable_2fa5c51a-18c2-431b-9ff4-2fc8c93f9fac
+ref table 'Fact Order Payments'
+ref table LocalDateTable_d6887237-b20c-40f3-ac9c-a47264c27bb9
+ref table 'Fact Order Items'
+ref table LocalDateTable_d8afc790-2627-41c5-8373-ed3f56de9ddf
+ref table LocalDateTable_f024cbcd-bc68-4ea8-b0fe-e168c79bddc4
+ref table 'Dim Seller'
+ref table 'Dim Product'
+ref table 'Dim Date'
+ref table LocalDateTable_5b931761-1364-4cf7-b040-b3b8c6b07d3b
+ref table 'Dim Customer'
+ref table 'Measures (1)'
+ref table 'Customer Segment'
+
+ref cultureInfo en-US
+

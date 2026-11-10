@@ -1,0 +1,37 @@
+table 'Customer Segment'
+	lineageTag: 413c0dc3-002b-4657-ab0b-4292235f7b30
+
+	column 'Customer Segment'
+		lineageTag: 170aec1f-8815-40c7-865c-fdcc21be0fc8
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Customer Segment]
+		sortByColumn: 'Sort Order'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sort Order'
+		formatString: 0
+		lineageTag: 5c54ac67-97f6-47cc-80d9-ac51dc6ec998
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Sort Order]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Customer Segment' = calculated
+		mode: import
+		source =
+				
+				DATATABLE(
+				    "Customer Segment", STRING,
+				    "Sort Order", INTEGER,
+				    {
+				        {"One-time", 1},
+				        {"2 orders", 2},
+				        {"3+ orders", 3}
+				    }
+				)
+
+	annotation PBI_Id = 1971f3a3f9e44a5eb8caa98f1c1d0fa4
+

@@ -1,0 +1,20 @@
+# Downloaded source and local processed data
+/data*
+!/data/raw/README.md
+/data/processed/*
+*.csv
+
+# Local environment and credentials
+.env
+.env.*
+*.log
+
+# Power BI local cache / user settings (retain PBIP report and model definitions)
+**/.pbi/localSettings.json
+**/.pbi/cache.abf
+
+# Operating system and temporary files
+.DS_Store
+Thumbs.db
+*.tmp
+*.bak

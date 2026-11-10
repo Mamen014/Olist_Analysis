@@ -1,0 +1,633 @@
+table 'Measures (1)'
+	lineageTag: 0c8b51b2-06c3-4473-b152-01693a9220ce
+
+	measure 'Total Orders' =
+			
+			COUNTROWS('Fact Orders')
+		formatString: #,0
+		lineageTag: 4820e6ec-5daa-4ce5-8c35-6101ec6ddee8
+
+	measure 'Delivered Orders' =
+			
+			CALCULATE(
+			    [Total Orders],
+			    'Fact Orders'[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 8ce5ce39-4330-46dd-907d-ad1d08412bcf
+
+	measure 'Eligible Delivered Orders' =
+			
+			CALCULATE(
+			    [Total Orders],
+			    'Fact Orders'[is_delivery_eligible] = TRUE()
+			)
+		formatString: #,0
+		lineageTag: dd6c1094-86a2-4d8a-8256-a6748215e9a6
+
+	measure 'On-Time Orders' =
+			
+			CALCULATE(
+			    [Total Orders],
+			    'Fact Orders'[is_on_time_delivery] = TRUE()
+			)
+		formatString: #,0
+		lineageTag: 6d47320e-6a7d-4579-b4a5-c05f462b80cc
+
+	measure 'Late Orders' =
+			
+			CALCULATE(
+			    [Total Orders],
+			    'Fact Orders'[is_delivery_eligible] = TRUE(),
+			    'Fact Orders'[is_on_time_delivery] = FALSE()
+			)
+		formatString: #,0
+		lineageTag: db13b695-35dd-4840-a81e-2efcc5ee2b27
+
+	measure 'On-Time Delivery %' =
+			
+			DIVIDE(
+			    [On-Time Orders],
+			    [Eligible Delivered Orders]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 86c5d9f7-d05f-47c9-bedb-bbfc17f94221
+
+	measure 'Average Delivery Days' =
+			
+			CALCULATE(
+			    AVERAGE('Fact Orders'[delivery_days]),
+			    'Fact Orders'[is_delivery_eligible] = TRUE()
+			)
+		formatString: #,0.00
+		lineageTag: 14a97ac3-b853-415c-aed2-39a042f14b88
+
+	measure 'Average Days Late' =
+			
+			CALCULATE(
+			    AVERAGE('Fact Orders'[late_days]),
+			    'Fact Orders'[is_delivery_eligible] = TRUE(),
+			    'Fact Orders'[is_on_time_delivery] = FALSE()
+			)
+		formatString: #,0.00
+		lineageTag: 03f8dcfe-3c80-4fa4-a289-f374d73e62fc
+
+	measure 'Delivered Merchandise Value' =
+			
+			CALCULATE(
+			    SUM('Fact Order Items'[merchandise_value]),
+			    'Fact Order Items'[order_status] = "delivered"
+			)
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 3f744bad-707a-4bb6-bd12-aceed7208333
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-US"}
+
+	measure 'Delivered Freight Value' =
+			
+			CALCULATE(
+			    SUM('Fact Order Items'[freight_value]),
+			    'Fact Order Items'[order_status] = "delivered"
+			)
+		formatString: "Rp"#,0.###############;-"Rp"#,0.###############;"Rp"#,0.###############
+		lineageTag: 3e88a7bc-3445-4865-9fbf-f8bb85978bf0
+
+		annotation PBI_FormatHint = {"currencyCulture":"en-ID"}
+
+	measure 'Delivered Item Lines' =
+			
+			CALCULATE(
+			    COUNTROWS('Fact Order Items'),
+			    'Fact Order Items'[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 8fd503a4-c9ba-4464-bdbb-0a17a9aac0d9
+
+	measure 'Delivered Orders (Item Context)' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Fact Order Items'[order_id]),
+			    'Fact Order Items'[order_status] = "delivered"
+			)
+		formatString: #,0
+		lineageTag: 2e1783d4-3112-4d6f-99bc-2c5953742491
+
+	measure 'Reviewed Delivered Orders' =
+			
+			COUNTROWS(
+			    FILTER(
+			        'Fact Orders',
+			        'Fact Orders'[is_delivery_eligible] = TRUE()
+			            && NOT ISBLANK('Fact Orders'[review_score])
+			    )
+			)
+		formatString: #,0
+		lineageTag: 4fd430ab-4e75-4d97-8062-0e2d6249e3f5
+
+	measure 'Average Review Score' =
+			
+			CALCULATE(
+			    AVERAGE('Fact Orders'[review_score]),
+			    'Fact Orders'[order_status] = "delivered"
+			)
+		formatString: #,0.00
+		lineageTag: d106ced1-7e36-46ee-9a6f-30f23f921b8e
+
+	measure 'Low-Rating Orders' =
+			
+			COUNTROWS(
+			    FILTER(
+			        'Fact Orders',
+			        'Fact Orders'[is_delivery_eligible] = TRUE()
+			            && 'Fact Orders'[review_score] IN {1, 2}
+			    )
+			)
+		formatString: #,0
+		lineageTag: 885df7fc-c8be-4b3c-acee-fe7be7683ba7
+
+	measure 'Low-Rating %' =
+			
+			DIVIDE(
+			    [Low-Rating Orders],
+			    [Reviewed Delivered Orders]
+			)
+		formatString: #,0.00%;-#,0.00%;#,0.00%
+		lineageTag: 90326230-e68b-43ef-b9ec-5b2918f90db0
+
+	measure 'Active Sellers' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Fact Order Items'[seller_id]),
+			    'Fact Order Items'[order_status] = "delivered"
+			)
+		formatString: 0
+		lineageTag: 18de80c9-017e-424d-9263-a34c14ff6ee2
+
+	measure 'Distinct Products Sold' =
+			
+			CALCULATE(
+			    DISTINCTCOUNT('Fact Order Items'[product_id]),
+			    'Fact Order Items'[order_status] = "delivered"
+			)
+		formatString: 0
+		lineageTag: 5c3e1894-a8c1-414c-9e6a-4c2d5d20b750
+
+	measure 'Freight-to-Merchandise %' =
+			
+			DIVIDE(
+			    [Delivered Freight Value],
+			    [Delivered Merchandise Value]
+			)
+		lineageTag: 91343919-5a86-47b7-a369-b4a2439c90bd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Delivered Item Price' =
+			
+			DIVIDE(
+			    [Delivered Merchandise Value],
+			    [Delivered Item Lines]
+			)
+		lineageTag: 57014e52-0dd6-478b-abbd-466182d0df22
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Merchandise per Active Seller' =
+			
+			DIVIDE(
+			    [Delivered Merchandise Value],
+			    [Active Sellers]
+			)
+		lineageTag: dc85317e-b858-4a02-9a8e-6b77bbb17b74
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Category Merchandise Share %' =
+			
+			DIVIDE(
+			    [Delivered Merchandise Value],
+			    CALCULATE(
+			        [Delivered Merchandise Value],
+			        ALLSELECTED(
+			            'Dim Product'[product_category]
+			        )
+			    )
+			)
+		lineageTag: b52bc16e-01a0-4bd1-bdf1-838a8910da51
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Seller State Merchandise Share %' =
+			
+			DIVIDE(
+			    [Delivered Merchandise Value],
+			    CALCULATE(
+			        [Delivered Merchandise Value],
+			        ALLSELECTED('Dim Seller'[seller_state])
+			    )
+			)
+		lineageTag: 689f6a04-8f2c-4462-a515-246d1d99cf6d
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 10 Seller Contribution %' =
+			
+			VAR SellerValues =
+			    ADDCOLUMNS(
+			        ALLSELECTED('Dim Seller'[seller_id]),
+			        "SellerValue",
+			            CALCULATE([Delivered Merchandise Value])
+			    )
+			
+			VAR TopSellers =
+			    TOPN(
+			        10,
+			        SellerValues,
+			        [SellerValue], DESC,
+			        'Dim Seller'[seller_id], ASC
+			    )
+			
+			VAR TopSellerValue =
+			    SUMX(TopSellers, [SellerValue])
+			
+			VAR TotalSellerValue =
+			    CALCULATE(
+			        [Delivered Merchandise Value],
+			        ALLSELECTED('Dim Seller'[seller_id])
+			    )
+			
+			RETURN
+			    DIVIDE(TopSellerValue, TotalSellerValue)
+		lineageTag: 041da5b0-9b81-4d4b-9263-9836bd8f03cd
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 50 Seller Contribution %' =
+			
+			VAR SellerValues =
+			    ADDCOLUMNS(
+			        ALLSELECTED('Dim Seller'[seller_id]),
+			        "SellerValue",
+			            CALCULATE([Delivered Merchandise Value])
+			    )
+			
+			VAR TopSellers =
+			    TOPN(
+			        50,
+			        SellerValues,
+			        [SellerValue], DESC,
+			        'Dim Seller'[seller_id], ASC
+			    )
+			
+			VAR TopSellerValue =
+			    SUMX(TopSellers, [SellerValue])
+			
+			VAR TotalSellerValue =
+			    CALCULATE(
+			        [Delivered Merchandise Value],
+			        ALLSELECTED('Dim Seller'[seller_id])
+			    )
+			
+			RETURN
+			    DIVIDE(TopSellerValue, TotalSellerValue)
+		lineageTag: ccc85b9e-8367-4020-8afc-0bf35c0f16e1
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Top 100 Seller Contribution %' =
+			
+			VAR SellerValues =
+			    ADDCOLUMNS(
+			        ALLSELECTED('Dim Seller'[seller_id]),
+			        "SellerValue",
+			            CALCULATE([Delivered Merchandise Value])
+			    )
+			
+			VAR TopSellers =
+			    TOPN(
+			        100,
+			        SellerValues,
+			        [SellerValue], DESC,
+			        'Dim Seller'[seller_id], ASC
+			    )
+			
+			VAR TopSellerValue =
+			    SUMX(TopSellers, [SellerValue])
+			
+			VAR TotalSellerValue =
+			    CALCULATE(
+			        [Delivered Merchandise Value],
+			        ALLSELECTED('Dim Seller'[seller_id])
+			    )
+			
+			RETURN
+			    DIVIDE(TopSellerValue, TotalSellerValue)
+		lineageTag: d71efebf-6f22-4601-b7f7-01cbeb902c96
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Customers with Delivered Orders' =
+			
+			VAR ActiveCustomerIDs =
+			    CALCULATETABLE(
+			        VALUES('Fact Orders'[customer_id]),
+			        'Fact Orders'[order_status] = "delivered"
+			    )
+			RETURN
+			    CALCULATE(
+			        DISTINCTCOUNT('Dim Customer'[customer_unique_id]),
+			        TREATAS(
+			            ActiveCustomerIDs,
+			            'Dim Customer'[customer_id]
+			        )
+			    )
+		formatString: #,0.00
+		lineageTag: b569aedc-60f6-45c7-8a6d-84ee87203779
+
+	measure 'Repeat Customers' =
+			
+			VAR CustomerOrderSummary =
+			    ADDCOLUMNS(
+			        FILTER(
+			            VALUES('Dim Customer'[customer_unique_id]),
+			            NOT ISBLANK('Dim Customer'[customer_unique_id])
+			        ),
+			        "__DeliveredOrders",
+			            CALCULATE(
+			                DISTINCTCOUNT('Fact Orders'[order_id]),
+			                'Fact Orders'[order_status] = "delivered"
+			            )
+			    )
+			RETURN
+			    COUNTROWS(
+			        FILTER(
+			            CustomerOrderSummary,
+			            [__DeliveredOrders] >= 2
+			        )
+			    )
+		formatString: 0.00
+		lineageTag: f3dd8cff-aa93-4fed-8b1a-b6dfa1037e4c
+
+	measure 'Repeat Customer %' =
+			
+			DIVIDE(
+			    [Repeat Customers],
+			    [Customers with Delivered Orders]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bbf5c886-ad70-4f92-b207-6764075f4dc8
+
+	measure 'Repeat Customer Merchandise Value' =
+			
+			VAR CustomerOrderSummary =
+			    ADDCOLUMNS(
+			        FILTER(
+			            VALUES('Dim Customer'[customer_unique_id]),
+			            NOT ISBLANK('Dim Customer'[customer_unique_id])
+			        ),
+			        "__DeliveredOrders",
+			            CALCULATE(
+			                DISTINCTCOUNT('Fact Orders'[order_id]),
+			                'Fact Orders'[order_status] = "delivered"
+			            ),
+			        "__MerchandiseValue",
+			            CALCULATE(
+			                SUM('Fact Orders'[merchandise_value]),
+			                'Fact Orders'[order_status] = "delivered"
+			            )
+			    )
+			RETURN
+			    SUMX(
+			        FILTER(
+			            CustomerOrderSummary,
+			            [__DeliveredOrders] >= 2
+			        ),
+			        [__MerchandiseValue]
+			    )
+		lineageTag: f0c6bda3-afab-4111-be0f-9eb716231765
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Repeat Customer Merchandise Value Share %' =
+			
+			DIVIDE(
+			    [Repeat Customer Merchandise Value],
+			    [Delivered Merchandise Value]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: bccb5f0f-60ec-4427-be1d-c3d74c8a6303
+
+	measure 'Average Merchandise per Customer' =
+			
+			DIVIDE(
+			    [Delivered Merchandise Value],
+			    [Customers with Delivered Orders]
+			)
+		lineageTag: f4db0753-7038-4421-9fe5-f8c18b42f618
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Customers by Segment' =
+			
+			VAR SelectedSegment =
+			    SELECTEDVALUE('Customer Segment'[Customer Segment])
+			
+			VAR CustomerOrderSummary =
+			    ADDCOLUMNS(
+			        FILTER(
+			            VALUES('Dim Customer'[customer_unique_id]),
+			            NOT ISBLANK('Dim Customer'[customer_unique_id])
+			        ),
+			        "__DeliveredOrders",
+			            COALESCE(
+			                CALCULATE(
+			                    DISTINCTCOUNT('Fact Orders'[order_id]),
+			                    'Fact Orders'[order_status] = "delivered"
+			                ),
+			                0
+			            )
+			    )
+			
+			RETURN
+			    COUNTROWS(
+			        FILTER(
+			            CustomerOrderSummary,
+			            SWITCH(
+			                SelectedSegment,
+			                "One-time", [__DeliveredOrders] = 1,
+			                "2 orders", [__DeliveredOrders] = 2,
+			                "3+ orders", [__DeliveredOrders] >= 3,
+			                FALSE()
+			            )
+			        )
+			    )
+		formatString: #,0
+		lineageTag: 7e95bb38-d9dd-467b-841a-5f8b722adb52
+
+	measure 'Delivered Orders by Segment' =
+			
+			VAR SelectedSegment =
+			    SELECTEDVALUE('Customer Segment'[Customer Segment])
+			
+			VAR CustomerOrderSummary =
+			    ADDCOLUMNS(
+			        FILTER(
+			            VALUES('Dim Customer'[customer_unique_id]),
+			            NOT ISBLANK('Dim Customer'[customer_unique_id])
+			        ),
+			        "__DeliveredOrders",
+			            COALESCE(
+			                CALCULATE(
+			                    DISTINCTCOUNT('Fact Orders'[order_id]),
+			                    'Fact Orders'[order_status] = "delivered"
+			                ),
+			                0
+			            )
+			    )
+			
+			RETURN
+			    SUMX(
+			        FILTER(
+			            CustomerOrderSummary,
+			            SWITCH(
+			                SelectedSegment,
+			                "One-time", [__DeliveredOrders] = 1,
+			                "2 orders", [__DeliveredOrders] = 2,
+			                "3+ orders", [__DeliveredOrders] >= 3,
+			                FALSE()
+			            )
+			        ),
+			        [__DeliveredOrders]
+			    )
+		formatString: #,0
+		lineageTag: 7d50da6e-30e2-4b0a-a089-38fc57abb49d
+
+	measure 'Merchandise Value by Segment' =
+			
+			VAR SelectedSegment =
+			    SELECTEDVALUE('Customer Segment'[Customer Segment])
+			
+			VAR CustomerOrderSummary =
+			    ADDCOLUMNS(
+			        FILTER(
+			            VALUES('Dim Customer'[customer_unique_id]),
+			            NOT ISBLANK('Dim Customer'[customer_unique_id])
+			        ),
+			        "__DeliveredOrders",
+			            COALESCE(
+			                CALCULATE(
+			                    DISTINCTCOUNT('Fact Orders'[order_id]),
+			                    'Fact Orders'[order_status] = "delivered"
+			                ),
+			                0
+			            ),
+			        "__MerchandiseValue",
+			            COALESCE(
+			                CALCULATE(
+			                    SUM('Fact Orders'[merchandise_value]),
+			                    'Fact Orders'[order_status] = "delivered"
+			                ),
+			                0
+			            )
+			    )
+			
+			RETURN
+			    SUMX(
+			        FILTER(
+			            CustomerOrderSummary,
+			            SWITCH(
+			                SelectedSegment,
+			                "One-time", [__DeliveredOrders] = 1,
+			                "2 orders", [__DeliveredOrders] = 2,
+			                "3+ orders", [__DeliveredOrders] >= 3,
+			                FALSE()
+			            )
+			        ),
+			        [__MerchandiseValue]
+			    )
+		lineageTag: 8619ec3d-5cf4-4d88-94b5-8d0920ffddc4
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Customer Share by Segment %' =
+			
+			DIVIDE(
+			    [Customers by Segment],
+			    [Customers with Delivered Orders]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: aa9739cc-6775-4617-9fee-21daaf5a18b1
+
+	measure 'Order Share by Segment %' =
+			
+			DIVIDE(
+			    [Delivered Orders by Segment],
+			    [Delivered Orders]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: 09c0e993-3877-4de5-8886-5980600fa22f
+
+	measure 'Merchandise Value Share by Segment %' =
+			
+			DIVIDE(
+			    [Merchandise Value by Segment],
+			    [Delivered Merchandise Value]
+			)
+		formatString: 0.00%;-0.00%;0.00%
+		lineageTag: f137b146-79fc-4c29-8436-cfc7fb0ef7a4
+
+	measure 'Average Merchandise per Segment Customer' =
+			
+			DIVIDE(
+			    [Merchandise Value by Segment],
+			    [Customers by Segment]
+			)
+		lineageTag: 7f43acfd-9614-4ec6-92a5-a50df0c7835e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average Merchandise per Segment Order' =
+			
+			DIVIDE(
+			    [Merchandise Value by Segment],
+			    [Delivered Orders by Segment]
+			)
+		lineageTag: b4292b75-2af0-4f28-8f40-c69d957d87c9
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Late Delivery %' =
+			
+			DIVIDE(
+			    [Late Orders],
+			    [Eligible Delivered Orders]
+			)
+		lineageTag: 623a7c88-4f42-480e-8813-0ec102c838f8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column Placeholder
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: f1797330-984a-4de1-bf67-94d5e14b7fe5
+		summarizeBy: sum
+		sourceColumn: Placeholder
+
+		changedProperty = IsHidden
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Measures (1)' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i45WMlSKjQUA", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Placeholder = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Placeholder", Int64.Type}})
+				in
+				    #"Changed Type"
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

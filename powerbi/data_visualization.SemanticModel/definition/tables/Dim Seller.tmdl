@@ -1,0 +1,57 @@
+table 'Dim Seller'
+	lineageTag: e215e138-4939-4d37-9807-d82bcaad7142
+
+	column seller_id
+		dataType: string
+		lineageTag: a5d6b675-53f1-4200-95ae-8cd606de7175
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_zipcode_prefix
+		dataType: string
+		lineageTag: e3152b99-e117-4f45-b36d-5432acda2d3c
+		summarizeBy: none
+		sourceColumn: seller_zipcode_prefix
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_city
+		dataType: string
+		lineageTag: d6213de1-3e71-466d-9239-e39b73b1dba0
+		summarizeBy: none
+		sourceColumn: seller_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_state
+		dataType: string
+		lineageTag: d49adf64-7072-4af8-a03a-3262eaaff9f7
+		summarizeBy: none
+		sourceColumn: seller_state
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Seller Display ID' =
+			
+			"Seller " &
+			LEFT('Dim Seller'[seller_id], 10)
+		lineageTag: 2e2abf60-3c24-4f36-b50a-f1aa374e4d97
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dim Seller' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "olist_analysis"),
+				    analytics_dim_seller = Source{[Schema="analytics",Item="dim_seller"]}[Data]
+				in
+				    analytics_dim_seller
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

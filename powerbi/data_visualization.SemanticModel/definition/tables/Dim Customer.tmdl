@@ -1,0 +1,58 @@
+table 'Dim Customer'
+	lineageTag: e744d3c5-f3a1-44aa-9e50-dfb9177b75a8
+
+	column customer_id
+		dataType: string
+		lineageTag: 19eee643-3e30-40ff-9bd7-415d5d8beea1
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_unique_id
+		dataType: string
+		lineageTag: 142bb8c4-08d0-4c6f-be10-e381e69af25c
+		summarizeBy: none
+		sourceColumn: customer_unique_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_zipcode_prefix
+		dataType: string
+		lineageTag: 727829d6-1cb1-4b59-bedf-c44713fdfbdf
+		summarizeBy: none
+		sourceColumn: customer_zipcode_prefix
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_city
+		dataType: string
+		lineageTag: 81ce6208-f954-4a9f-a51f-6ea84fac94d7
+		summarizeBy: none
+		sourceColumn: customer_city
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_state
+		dataType: string
+		lineageTag: 81a6e464-082d-4b9a-874b-944c3eca034d
+		summarizeBy: none
+		sourceColumn: customer_state
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Dim Customer' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "olist_analysis"),
+				    analytics_dim_customer = Source{[Schema="analytics",Item="dim_customer"]}[Data]
+				in
+				    analytics_dim_customer
+
+	changedProperty = Name
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

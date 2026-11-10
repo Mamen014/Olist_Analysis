@@ -1,0 +1,77 @@
+relationship 56d948c0-6235-4afd-9ec1-9b002609702e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Orders'.order_purchase_timestamp
+	toColumn: LocalDateTable_ca1310c8-3828-4d4b-8df8-904ed8a6e61b.Date
+
+relationship 2cbd391c-4b4b-401a-8f7a-2e3aa1a0204e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Orders'.order_approved_at
+	toColumn: LocalDateTable_26188ec2-c5d0-42f0-9035-c3d3892b34ff.Date
+
+relationship 4c15e680-cc04-4cbc-ae76-831444b92361
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Orders'.order_delivered_carrier_date
+	toColumn: LocalDateTable_f4fc169d-5325-4b78-8327-011fce2a7da2.Date
+
+relationship b3364e06-6410-4b73-a349-d2783a31a4cc
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Orders'.order_delivered_customer_date
+	toColumn: LocalDateTable_cf73a71e-cd51-45f0-8028-64248d9699d2.Date
+
+relationship e44096c2-014f-456d-848c-34bc7917372e
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Orders'.order_estimated_delivery_date
+	toColumn: LocalDateTable_2fa5c51a-18c2-431b-9ff4-2fc8c93f9fac.Date
+
+relationship c8afedcf-c9a7-4878-9571-dbb5dc49dad4
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Order Payments'.order_purchase_timestamp
+	toColumn: LocalDateTable_d6887237-b20c-40f3-ac9c-a47264c27bb9.Date
+
+relationship ac90c929-690c-482a-aff8-115fb8c69bea
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Order Items'.order_purchase_timestamp
+	toColumn: LocalDateTable_d8afc790-2627-41c5-8373-ed3f56de9ddf.Date
+
+relationship 7eaef9d6-dde8-45b0-bdd0-d210c29bd266
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Fact Order Items'.shipping_limit_date
+	toColumn: LocalDateTable_f024cbcd-bc68-4ea8-b0fe-e168c79bddc4.Date
+
+relationship 67b2d891-ee81-4b71-a36c-ab8b76bbbca3
+	joinOnDateBehavior: datePartOnly
+	fromColumn: 'Dim Date'.date_key
+	toColumn: LocalDateTable_5b931761-1364-4cf7-b040-b3b8c6b07d3b.Date
+
+relationship a2420aac-d6d2-8cbc-5679-386c9ab173b6
+	fromColumn: 'Fact Orders'.customer_id
+	toColumn: 'Dim Customer'.customer_id
+
+relationship 7c64bc1d-5e16-81cc-3dec-c862ac56a1a3
+	fromColumn: 'Fact Order Items'.customer_id
+	toColumn: 'Dim Customer'.customer_id
+
+relationship d29913f9-3a94-1a8c-d8c4-1d41d117d764
+	fromColumn: 'Fact Order Payments'.customer_id
+	toColumn: 'Dim Customer'.customer_id
+
+relationship 22ee107a-ec6a-5f30-da95-04aed989ec0f
+	fromColumn: 'Fact Order Items'.product_id
+	toColumn: 'Dim Product'.product_id
+
+relationship ac8107d3-119f-921a-1b0f-7a9279f8f70b
+	fromColumn: 'Fact Order Items'.seller_id
+	toColumn: 'Dim Seller'.seller_id
+
+relationship 9e2588e0-01fd-ef3b-cae8-3b0966dcc228
+	fromColumn: 'Fact Orders'.purchase_date_key
+	toColumn: 'Dim Date'.date_key
+
+relationship 27ea6236-8842-3e7b-37ad-e5626e9afb71
+	fromColumn: 'Fact Order Items'.purchase_date_key
+	toColumn: 'Dim Date'.date_key
+
+relationship a0e96050-1e30-3a8b-fcaf-1f0d5e05ac01
+	fromColumn: 'Fact Order Payments'.purchase_date_key
+	toColumn: 'Dim Date'.date_key
+

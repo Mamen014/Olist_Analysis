@@ -1,0 +1,109 @@
+table 'Fact Order Payments'
+	lineageTag: 5831e999-a7a2-4558-8b3c-544acf001249
+
+	column order_id
+		dataType: string
+		lineageTag: 5ec6fdca-0f68-43f5-a2cd-4aaf21c2e9d8
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_sequential
+		dataType: int64
+		formatString: 0
+		lineageTag: b8d0c298-cb0e-4027-8322-d692efca10f1
+		summarizeBy: sum
+		sourceColumn: payment_sequential
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_record_key
+		dataType: string
+		lineageTag: 02fd7945-5aec-4be9-98b3-e9d8ad403741
+		summarizeBy: none
+		sourceColumn: payment_record_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: a891b31c-6c53-4462-ac66-f1754d68706f
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: 49c1b9af-29bc-4175-a5f9-7fe4d71c87bd
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a7daa80a-08a9-4e4c-b0f5-f7e90208bd02
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		variation Variation
+			isDefault
+			relationship: c8afedcf-c9a7-4878-9571-dbb5dc49dad4
+			defaultHierarchy: LocalDateTable_d6887237-b20c-40f3-ac9c-a47264c27bb9.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column purchase_date_key
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 99049ec4-5152-4ede-adce-17da84646f6b
+		summarizeBy: none
+		sourceColumn: purchase_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column payment_type
+		dataType: string
+		lineageTag: b5da788f-de8e-44bf-b3ec-85dba5d896d5
+		summarizeBy: none
+		sourceColumn: payment_type
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_installments
+		dataType: int64
+		formatString: 0
+		lineageTag: d20ccd19-3531-410a-a0d9-da3263330195
+		summarizeBy: sum
+		sourceColumn: payment_installments
+
+		annotation SummarizationSetBy = Automatic
+
+	column payment_value
+		dataType: double
+		lineageTag: 7f444bde-5403-4d58-a27a-3e03db7ee458
+		summarizeBy: sum
+		sourceColumn: payment_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Fact Order Payments' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "olist_analysis"),
+				    analytics_fact_order_payments = Source{[Schema="analytics",Item="fact_order_payments"]}[Data]
+				in
+				    analytics_fact_order_payments
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+

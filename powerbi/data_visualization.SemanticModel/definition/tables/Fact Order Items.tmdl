@@ -1,0 +1,142 @@
+table 'Fact Order Items'
+	lineageTag: 39accfbf-7630-470f-854e-c40c465bf975
+
+	column order_id
+		dataType: string
+		lineageTag: d42cde9f-efa7-4ee9-9a11-55d832a15e2a
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_id
+		dataType: int64
+		formatString: 0
+		lineageTag: 2329f5ee-3dbd-4c27-b43b-ca67fe012e49
+		summarizeBy: sum
+		sourceColumn: order_item_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_item_key
+		dataType: string
+		lineageTag: df4c419c-e889-4b7e-bcbc-9fe389145ff1
+		summarizeBy: none
+		sourceColumn: order_item_key
+
+		annotation SummarizationSetBy = Automatic
+
+	column customer_id
+		dataType: string
+		lineageTag: 40f96fec-eb85-46e7-a346-5f0d9cb86ae7
+		summarizeBy: none
+		sourceColumn: customer_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column product_id
+		dataType: string
+		lineageTag: 7aaecf17-0d6a-42b6-a886-f05478d64b50
+		summarizeBy: none
+		sourceColumn: product_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column seller_id
+		dataType: string
+		lineageTag: 7565f84d-3bc5-4d9d-8cca-9ba4380fde7b
+		summarizeBy: none
+		sourceColumn: seller_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_status
+		dataType: string
+		lineageTag: fb95f9aa-8e4a-4e08-8710-9aa52edf8ee6
+		summarizeBy: none
+		sourceColumn: order_status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_purchase_timestamp
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 0a01f62a-1b1a-47f2-800a-b0d2281f0da6
+		summarizeBy: none
+		sourceColumn: order_purchase_timestamp
+
+		variation Variation
+			isDefault
+			relationship: ac90c929-690c-482a-aff8-115fb8c69bea
+			defaultHierarchy: LocalDateTable_d8afc790-2627-41c5-8373-ed3f56de9ddf.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column purchase_date_key
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 70274889-939d-44d6-abb4-47b3cfd3830f
+		summarizeBy: none
+		sourceColumn: purchase_date_key
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column shipping_limit_date
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 2813fb7f-a348-4605-8ff0-5488974c37a6
+		summarizeBy: none
+		sourceColumn: shipping_limit_date
+
+		variation Variation
+			isDefault
+			relationship: 7eaef9d6-dde8-45b0-bdd0-d210c29bd266
+			defaultHierarchy: LocalDateTable_f024cbcd-bc68-4ea8-b0fe-e168c79bddc4.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column merchandise_value
+		dataType: double
+		lineageTag: 8f1b26a7-7947-4fb2-90bc-d4fd1d16175a
+		summarizeBy: sum
+		sourceColumn: merchandise_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column freight_value
+		dataType: double
+		lineageTag: 39d38274-fc6a-45e4-b879-e53b7c85737d
+		summarizeBy: sum
+		sourceColumn: freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column item_and_freight_value
+		dataType: double
+		lineageTag: 66ed3e22-3c41-49b1-bd1b-3c0b0c268735
+		summarizeBy: sum
+		sourceColumn: item_and_freight_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Fact Order Items' = m
+		mode: import
+		source =
+				let
+				    Source = PostgreSQL.Database("localhost:5432", "olist_analysis"),
+				    analytics_fact_order_items = Source{[Schema="analytics",Item="fact_order_items"]}[Data]
+				in
+				    analytics_fact_order_items
+
+	changedProperty = Name
+
+	annotation PBI_ResultType = Table
+
