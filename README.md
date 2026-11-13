@@ -17,7 +17,6 @@ The Power BI report contains four pages:
 | 03 — Customer & Market Insights | Purchase frequency, repeat-customer value, and customer geography |
 | 04 — Delivery & Customer Experience | Delivery reliability, regional performance, and review outcomes |
 
-Add the four exported report-page images under [`powerbi/screenshots/`](powerbi/screenshots/). Once added, they will provide a quick way to review the report without opening Power BI Desktop.
 
 ## Business questions
 
@@ -38,7 +37,6 @@ Add the four exported report-page images under [`powerbi/screenshots/`](powerbi/
 - The top 100 sellers contribute **45.52%** of delivered merchandise value.
 - **54.08%** of late orders with unambiguous review scores received one- or two-star ratings, compared with **9.19%** of on-time orders. This is an observed association, not evidence of causation.
 
-These are historical dataset findings, not statements about Olist's current operating performance.
 
 ## Workflow
 
@@ -77,24 +75,21 @@ olist-ecommerce-analytics/
 │   ├── exploratory_analysis.md
 │   ├── business_analysis.md
 │   └── validation_results.md
-├── data/
-│   └── README.md
 ├── powerbi/
 │   ├── README.md
 │   ├── screenshots/
 │   └── [PBIP project files or PBIX release]
 └── presentation/
-    ├── Olist_Business_Analysis.pptx
-    └── Olist_Business_Analysis.pdf
+    └── Olist_Analytics.pdf
 ```
 
-The raw dataset is intentionally not included. Download and load it locally by following [`data/README.md`](data/README.md).
+The raw dataset is intentionally not included.
 
 ## Reproducing the project
 
 1. Install PostgreSQL and a SQL client such as pgAdmin.
 2. Download the Olist CSV files from the [original Kaggle dataset page](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce).
-3. Create the `olist_analysis` database and load the nine source CSV files into the `raw` schema. Preserve the source column names; see [`data/README.md`](data/README.md).
+3. Create the `olist_analysis` database and load the nine source CSV files into the `raw` schema.
 4. Execute the SQL scripts in numerical order. The reporting layer depends on the completed staging layer.
 5. Compare the results with [`results/validation_results.md`](results/validation_results.md).
 6. Open the Power BI project and configure its PostgreSQL connection to the local database. See [`powerbi/README.md`](powerbi/README.md).

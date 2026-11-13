@@ -55,4 +55,4 @@ Open the `.pbix` in Power BI Desktop. For source control, consider using **File 
 
 ## Screenshots
 
-Screenshots should show each page in reading mode with default filters, no selections, no open editing panes, and no personal or connection details. The full-period dashboard numbers should match the SQL controls before screenshots are captured.
+Screenshots should show each page in reading mode with default filters, no selections, no open editing panes, and no personal or connection details.
